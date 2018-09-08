@@ -6,10 +6,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 
 /**
- * Logs
+ * Logs request and response calls made to a network.
  */
-
-
 fun loggingIntercept () : HttpLoggingInterceptor {
     val logger = HttpLoggingInterceptor.Logger { Log.d(Remote.TAG, it) }
     val loggingInterceptor = HttpLoggingInterceptor(logger)

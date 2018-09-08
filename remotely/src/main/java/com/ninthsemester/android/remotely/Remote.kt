@@ -16,6 +16,7 @@ class Remote(
 
     private val retrofit : Retrofit
     private val clientBuilder = OkHttpClient.Builder()
+    private val callAdapterFactory : RemoteCallAdapter.Factory
 
     init {
 
@@ -29,6 +30,13 @@ class Remote(
         //  modify header parameters.
         interceptors.forEach { clientBuilder.addInterceptor(it) }
 
+
+        //  Creating the adapter that transforms Retrofit.Call into Remote.Call
+        //  and Retrofit.Callback into Remote.Callback
+        callAdapterFactory = RemoteCallAdapter.Factory(errorResponseHandler)
+
+
+        //  Creating the retrofit object with passed arguments
         retrofit = Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .client(clientBuilder.build())

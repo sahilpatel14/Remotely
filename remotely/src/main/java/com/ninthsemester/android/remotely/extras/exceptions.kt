@@ -8,9 +8,7 @@ fun createErrorMessage(url: String): String {
 }
 
 class InvalidBaseUrlException(url: String) :
-        Exception(
-                createErrorMessage(url), Throwable(MalformedURLException(url)))
-
+        Exception(createErrorMessage(url), Throwable(MalformedURLException(url)))
 
 class EndpointNotFoundException : Exception("the url was not found")
 class UnexpectedException(throwable: Throwable) : Exception("Something unexpected has happened", throwable)

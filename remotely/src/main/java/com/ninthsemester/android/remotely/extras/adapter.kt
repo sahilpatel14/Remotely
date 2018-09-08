@@ -100,8 +100,8 @@ class CallAdapter<T>(
 
                         //  Page not found
                         404 -> {
-                            errorHandler(response, retrofit)
-                            callback.onFailure(EndpointNotFoundException())
+                            val error = errorHandler(response, retrofit)
+                            callback.onFailure(error)
                         }
 
                         //  We are not able to handle this response code.

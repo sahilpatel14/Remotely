@@ -21,6 +21,7 @@ fun Remote.validateBaseUrl() {
 
 
 fun <T> deSerialiseErrorWithModel(errorResponse: Response<*>, retrofit: Retrofit, clazz: Class<T>) : T {
+
     val errorConverter : Converter<ResponseBody, T> =
             retrofit.responseBodyConverter(clazz, arrayOfNulls<Annotation>(0))
     return errorConverter.convert(errorResponse.errorBody()!!)
@@ -28,8 +29,6 @@ fun <T> deSerialiseErrorWithModel(errorResponse: Response<*>, retrofit: Retrofit
 
 
 fun <T> convertJsonObjectToModel(responseJson : JsonArray) : List<T> {
-
-
     val listType = object : TypeToken<List<T>>() {}.type
     return Gson().fromJson(responseJson, listType)
 }

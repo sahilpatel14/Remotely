@@ -2,7 +2,6 @@ package com.ninthsemester.remotely.content.models
 
 import java.util.*
 
-data class StarShip(val name: String, val model: String, val manufacturer: String)
 
 
 data class UnsplashErrorResponse(
@@ -25,3 +24,4 @@ data class UnsplashErrorResponse(
 
 
 class UnSplashException(errorMessage : String) : Exception(errorMessage)
+

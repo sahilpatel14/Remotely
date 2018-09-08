@@ -1,16 +1,12 @@
 package com.ninthsemester.remotely.content.sources.swapi
 
 import android.content.Context
-import android.util.Log
-import com.google.gson.JsonObject
 import com.ninthsemester.android.remotely.Remote
-import com.ninthsemester.android.remotely.extras.convertJsonObjectToModel
 import com.ninthsemester.android.remotely.extras.deSerialiseErrorWithModel
 import com.ninthsemester.remotely.content.models.StarShip
-import com.ninthsemester.remotely.content.models.UnSplashException
-import com.ninthsemester.remotely.content.models.UnsplashErrorResponse
-import retrofit2.Call
-import retrofit2.Callback
+import com.ninthsemester.remotely.content.models.StarShipListResponse
+import com.ninthsemester.remotely.content.models.SwapiErrorResponse
+import com.ninthsemester.remotely.content.models.SwapiException
 import retrofit2.Response
 import retrofit2.Retrofit
 
@@ -18,58 +14,64 @@ class Swapi(context: Context) {
 
     private val errorResponseHandler : (Response<*>, Retrofit) -> Exception = { errorResponse, retrofit ->
 
-        val error = deSerialiseErrorWithModel(errorResponse, retrofit, UnsplashErrorResponse::class.java)
-        val allErrors = error.errors.reduce { acc, s -> acc+s }
-        UnSplashException(allErrors)
+        val error = deSerialiseErrorWithModel(errorResponse, retrofit, SwapiErrorResponse::class.java)
+        val errorMessage = error.detail
+        SwapiException(errorMessage)
     }
 
     private val baseUrl = "https://swapi.co/api/"
     private val remote = Remote(
             baseUrl,
-            errorResponseHandler = errorResponseHandler
-    )
-    private val swapiService = remote.service(API::class.java)
+            errorResponseHandler = errorResponseHandler)
 
 
+    private val service = remote.service(API::class.java)
 
-    fun getStarships() {
-        swapiService.getStarShips().enqueue(object : Remote.CallBack<JsonObject> {
 
-            override fun onSuccess(response: Response<JsonObject>?) {
-                val results = response?.body()?.getAsJsonArray("results")
-                val ships : List<StarShip> = convertJsonObjectToModel<StarShip>(results!!)
-                Log.d(TAG, "fss")
-            }
-
-            override fun onFailure(t: Throwable?) {
-                Log.d(TAG, "fss")
-            }
-        })
-//        remote.swapiService(API::class.java).getStarShips().enqueue()
-    }
-
-    fun getShip() {
-        swapiService.getStarShip("9").enqueue(object : Remote.CallBack<StarShip> {
+    fun getStarShip(
+            starShipId : String,
+            onStarShipReceived : (starShip: StarShip) -> Unit,
+            onError : (Exception) -> Unit) {
+        
+        service.getStarShip(starShipId).enqueue(object : Remote.CallBack<StarShip> {
 
             override fun onSuccess(response: Response<StarShip>?) {
-                Log.d(TAG, "fss")
+                response?.let {
+
+                    it.body()?.let {
+                        onStarShipReceived(it)
+                    } ?: onError(RuntimeException("No response found"))
+
+                } ?: onError(RuntimeException("No response found"))
+
             }
 
             override fun onFailure(t: Throwable?) {
-                Log.d(TAG, "fss")
+                onError(Exception(t))
             }
         })
+        
     }
 
-    fun getShips() {
-        swapiService.getShips().enqueue(object : Callback<List<StarShip>> {
+    fun getStarShips(
+            onStarShipListReceived : (starShipList : List<StarShip>) -> Unit,
+            onError: (Exception) -> Unit) {
 
-            override fun onFailure(call: Call<List<StarShip>>?, t: Throwable?) {
-                Log.d(TAG, "fss")
+        service.getStarShips().enqueue(object : Remote.CallBack<StarShipListResponse> {
+
+
+            override fun onSuccess(response: Response<StarShipListResponse>?) {
+                response?.let {
+
+                    it.body()?.let {
+                        onStarShipListReceived(it.results)
+                    } ?: onError(RuntimeException("No response found"))
+
+                } ?: onError(RuntimeException("No response found"))
             }
 
-            override fun onResponse(call: Call<List<StarShip>>?, response: Response<List<StarShip>>?) {
-                Log.d(TAG, "fss")
+            override fun onFailure(t: Throwable?) {
+                onError(Exception(t))
             }
         })
     }
