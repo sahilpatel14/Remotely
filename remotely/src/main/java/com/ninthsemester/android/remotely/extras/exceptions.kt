@@ -11,5 +11,5 @@ class InvalidBaseUrlException(url: String) :
         Exception(createErrorMessage(url), Throwable(MalformedURLException(url)))
 
 class EndpointNotFoundException : Exception("the url was not found")
-class UnexpectedException(throwable: Throwable) : Exception("Something unexpected has happened", throwable)
 class NetworkConnectionException : Exception("We were unable to connect to the network", IOException())
+class UnexpectedException(throwable: Throwable) : Exception("Something unexpected has happened", throwable)

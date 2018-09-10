@@ -1,8 +1,9 @@
 package com.ninthsemester.android.remotely
 
+import com.ninthsemester.android.remotely.extras.InvalidBaseUrlException
 import com.ninthsemester.android.remotely.extras.RemoteCallAdapter
 import com.ninthsemester.android.remotely.extras.loggingInterceptor
-import com.ninthsemester.android.remotely.extras.validateBaseUrl
+import com.ninthsemester.android.remotely.extras.isValidUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Response
@@ -10,7 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class Remote(
-        val baseUrl : String,
+        baseUrl : String,
         interceptors: List<Interceptor> = emptyList(),
         errorResponseHandler : (errorResponse: Response<*>, retrofit: Retrofit) -> Exception) {
 
@@ -21,7 +22,10 @@ class Remote(
     init {
 
         //  throws an exception if the base url is not valid
-        validateBaseUrl()
+        val isValid = isValidUrl(baseUrl)
+        if (!isValid) {
+            throw InvalidBaseUrlException(baseUrl)
+        }
 
         //  Adding a logging interceptor
         clientBuilder.addNetworkInterceptor(loggingInterceptor)

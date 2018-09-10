@@ -16,5 +16,4 @@ fun loggingIntercept () : HttpLoggingInterceptor {
     return loggingInterceptor
 }
 
-
 val loggingInterceptor = loggingIntercept()

@@ -11,11 +11,12 @@ import retrofit2.Retrofit
 import java.net.MalformedURLException
 import java.net.URL
 
-fun Remote.validateBaseUrl() {
-    try {
+fun isValidUrl(baseUrl: String) : Boolean {
+    return try {
         URL(baseUrl)
+        true
     } catch (ex : MalformedURLException) {
-        throw InvalidBaseUrlException(baseUrl)
+        false
     }
 }
 
