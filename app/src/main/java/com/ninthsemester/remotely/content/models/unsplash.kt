@@ -22,6 +22,7 @@ data class UnsplashErrorResponse(
     }
 }
 
+class PictureResponse(id: String, width: Int, height: Int)
 
 class UnSplashException(errorMessage : String) : Exception(errorMessage)
 

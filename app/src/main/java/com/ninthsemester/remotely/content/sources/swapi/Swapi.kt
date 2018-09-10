@@ -7,6 +7,7 @@ import com.ninthsemester.remotely.content.models.StarShip
 import com.ninthsemester.remotely.content.models.StarShipListResponse
 import com.ninthsemester.remotely.content.models.SwapiErrorResponse
 import com.ninthsemester.remotely.content.models.SwapiException
+import okhttp3.Interceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 
@@ -23,6 +24,9 @@ class Swapi(context: Context) {
     private val remote = Remote(
             baseUrl,
             errorResponseHandler = errorResponseHandler)
+
+
+
 
 
     private val service = remote.service(API::class.java)
